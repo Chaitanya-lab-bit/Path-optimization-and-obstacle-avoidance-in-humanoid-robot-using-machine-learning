@@ -1,0 +1,130 @@
+import RPi.GPIO as GPIO
+import time
+
+# Pin mapping (BCM mode recommended)
+FrontLeft1 = 4
+FrontLeft2 = 5
+FrontRight1 = 6
+FrontRight2 = 7
+
+BackLeft1 = 8
+BackLeft2 = 9
+BackRight1 = 10
+BackRight2 = 11
+
+# Setup
+GPIO.setmode(GPIO.BCM)  # Use BCM numbering
+GPIO.setwarnings(False)
+
+motor_pins = [FrontLeft1, FrontLeft2, FrontRight1, FrontRight2,
+              BackLeft1, BackLeft2, BackRight1, BackRight2]
+
+for pin in motor_pins:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, GPIO.LOW)
+
+def delay(ms):
+    time.sleep(ms / 1000.0)
+
+# Movement functions
+def forward():
+    GPIO.output(FrontLeft1, GPIO.HIGH)
+    GPIO.output(FrontLeft2, GPIO.LOW)
+    GPIO.output(FrontRight1, GPIO.LOW)
+    GPIO.output(FrontRight2, GPIO.HIGH)
+    GPIO.output(BackLeft1, GPIO.HIGH)
+    GPIO.output(BackLeft2, GPIO.LOW)
+    GPIO.output(BackRight1, GPIO.LOW)
+    GPIO.output(BackRight2, GPIO.HIGH)
+
+def backward():
+    GPIO.output(FrontLeft1, GPIO.LOW)
+    GPIO.output(FrontLeft2, GPIO.HIGH)
+    GPIO.output(FrontRight1, GPIO.HIGH)
+    GPIO.output(FrontRight2, GPIO.LOW)
+    GPIO.output(BackLeft1, GPIO.LOW)
+    GPIO.output(BackLeft2, GPIO.HIGH)
+    GPIO.output(BackRight1, GPIO.HIGH)
+    GPIO.output(BackRight2, GPIO.LOW)
+
+def strafe_right():
+    GPIO.output(FrontLeft1, GPIO.HIGH)
+    GPIO.output(FrontLeft2, GPIO.LOW)
+    GPIO.output(FrontRight1, GPIO.HIGH)
+    GPIO.output(FrontRight2, GPIO.LOW)
+    GPIO.output(BackLeft1, GPIO.LOW)
+    GPIO.output(BackLeft2, GPIO.HIGH)
+    GPIO.output(BackRight1, GPIO.LOW)
+    GPIO.output(BackRight2, GPIO.HIGH)
+
+def strafe_left():
+    GPIO.output(FrontLeft1, GPIO.LOW)
+    GPIO.output(FrontLeft2, GPIO.HIGH)
+    GPIO.output(FrontRight1, GPIO.LOW)
+    GPIO.output(FrontRight2, GPIO.HIGH)
+    GPIO.output(BackLeft1, GPIO.HIGH)
+    GPIO.output(BackLeft2, GPIO.LOW)
+    GPIO.output(BackRight1, GPIO.HIGH)
+    GPIO.output(BackRight2, GPIO.LOW)
+
+def rotate_cw():
+    GPIO.output(FrontLeft1, GPIO.HIGH)
+    GPIO.output(FrontLeft2, GPIO.LOW)
+    GPIO.output(FrontRight1, GPIO.HIGH)
+    GPIO.output(FrontRight2, GPIO.LOW)
+    GPIO.output(BackLeft1, GPIO.HIGH)
+    GPIO.output(BackLeft2, GPIO.LOW)
+    GPIO.output(BackRight1, GPIO.HIGH)
+    GPIO.output(BackRight2, GPIO.LOW)
+
+def rotate_ccw():
+    GPIO.output(FrontLeft1, GPIO.LOW)
+    GPIO.output(FrontLeft2, GPIO.HIGH)
+    GPIO.output(FrontRight1, GPIO.LOW)
+    GPIO.output(FrontRight2, GPIO.HIGH)
+    GPIO.output(BackLeft1, GPIO.LOW)
+    GPIO.output(BackLeft2, GPIO.HIGH)
+    GPIO.output(BackRight1, GPIO.LOW)
+    GPIO.output(BackRight2, GPIO.HIGH)
+
+def diag_forward_left():
+    GPIO.output(FrontLeft1, GPIO.LOW)
+    GPIO.output(FrontLeft2, GPIO.LOW)  # stop FL
+    GPIO.output(FrontRight1, GPIO.LOW)
+    GPIO.output(FrontRight2, GPIO.HIGH) # forward FR
+    GPIO.output(BackLeft1, GPIO.HIGH)
+    GPIO.output(BackLeft2, GPIO.LOW)    # forward BL
+    GPIO.output(BackRight1, GPIO.LOW)
+    GPIO.output(BackRight2, GPIO.LOW)   # stop BR
+
+def diag_forward_right():
+    GPIO.output(FrontLeft1, GPIO.HIGH)
+    GPIO.output(FrontLeft2, GPIO.LOW)   # forward FL
+    GPIO.output(FrontRight1, GPIO.LOW)
+    GPIO.output(FrontRight2, GPIO.LOW)  # stop FR
+    GPIO.output(BackLeft1, GPIO.LOW)
+    GPIO.output(BackLeft2, GPIO.LOW)    # stop BL
+    GPIO.output(BackRight1, GPIO.LOW)
+    GPIO.output(BackRight2, GPIO.HIGH)  # forward BR
+
+try:
+    while True:
+        forward()
+        delay(2000)
+        backward()
+        delay(2000)
+        strafe_right()
+        delay(2000)
+        strafe_left()
+        delay(2000)
+        rotate_cw()
+        delay(2000)
+        rotate_ccw()
+        delay(2000)
+        diag_forward_left()
+        delay(2000)
+        diag_forward_right()
+        delay(2000)
+
+except KeyboardInterrupt:
+    GPIO.cleanup()
